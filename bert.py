@@ -12,12 +12,11 @@ The discipline of machine learning employs various approaches to teach computers
 where no fully satisfactory algorithm is available.'
 b = 'Machine learning is closely related to computational statistics, which focuses on making predictions using computers.\
 The study of mathematical optimization delivers methods, theory and application domains to the field of machine learning.'
-c="Software development is for dumb dumbs"
-sentences=[a,c]
-#%%
-sentence_embeddings=sbert_model.encode(sentences)
+c = "Software development is for dumb dumbs"
+sentences = [a, c]
 # %%
-cos_sim=cosine_similarity(sentence_embeddings)
+sentence_embeddings = sbert_model.encode(sentences)
+# %%
+cos_sim = cosine_similarity(sentence_embeddings)
 # %%
 print(cos_sim)
-# %%
