@@ -20,3 +20,5 @@ sentence_embeddings = sbert_model.encode(sentences)
 cos_sim = cosine_similarity(sentence_embeddings)
 # %%
 print(cos_sim)
+
+# %%
