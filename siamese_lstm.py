@@ -24,3 +24,84 @@ EMBEDDING_FILE2 = 'https://s3.amazonaws.com/dl4j-distribution/GoogleNews-vectors
 # %%
 word2vec = KeyedVectors.load_word2vec_format(EMBEDDING_FILE, binary=True)
 # %%
+TRAIN_PATH = "./datasets/train.csv"
+TEST_PATH = "./datasets/test.csv"
+# %%
+train_df = pd.read_csv(TRAIN_PATH)
+test_df = pd.read_csv(TEST_PATH)
+train_df.head()
+test_df.head()
+# %%
+train_df = train_df.sample(frac=0.2, random_state=42)
+test_df = test_df.sample(frac=0.2, random_state=42)
+# %%
+stop = set(stopwords.words("english"))
+# %%
+
+
+def text_to_word_list(text):
+    ''' Pre process and convert texts to a list of words '''
+    text = str(text)
+    text = text.lower()
+
+    # Clean the text
+    text = re.sub(r"[^A-Za-z0-9^,!.\/'+-=]", " ", text)
+    text = re.sub(r"what's", "what is ", text)
+    text = re.sub(r"\'s", " ", text)
+    text = re.sub(r"\'ve", " have ", text)
+    text = re.sub(r"can't", "cannot ", text)
+    text = re.sub(r"n't", " not ", text)
+    text = re.sub(r"i'm", "i am ", text)
+    text = re.sub(r"\'re", " are ", text)
+    text = re.sub(r"\'d", " would ", text)
+    text = re.sub(r"\'ll", " will ", text)
+    text = re.sub(r",", " ", text)
+    text = re.sub(r"\.", " ", text)
+    text = re.sub(r"!", " ! ", text)
+    text = re.sub(r"\/", " ", text)
+    text = re.sub(r"\^", " ^ ", text)
+    text = re.sub(r"\+", " + ", text)
+    text = re.sub(r"\-", " - ", text)
+    text = re.sub(r"\=", " = ", text)
+    text = re.sub(r"'", " ", text)
+    text = re.sub(r"(\d+)(k)", r"\g<1>000", text)
+    text = re.sub(r":", " : ", text)
+    text = re.sub(r" e g ", " eg ", text)
+    text = re.sub(r" b g ", " bg ", text)
+    text = re.sub(r" u s ", " american ", text)
+    text = re.sub(r"\0s", "0", text)
+    text = re.sub(r" 9 11 ", "911", text)
+    text = re.sub(r"e - mail", "email", text)
+    text = re.sub(r"j k", "jk", text)
+    text = re.sub(r"\s{2,}", " ", text)
+    text = text.split()
+    return text
+
+
+# %%
+text = "Hello my name is loca and i am a little pug"
+test = text_to_word_list(text)
+# %%
+question_cols = ["question1", "question2"]
+dfs = [train_df, test_df]
+# %%
+vocabulary_dict = dict()
+inverse_vocabulary = ["<unk>"]
+# %%
+for df in dfs:
+    for index, row in df.iterrows():
+        for question in question_cols:
+            ques2num = list()
+            for word in text_to_word_list(row[question]):
+                if word in stop and word not in word2vec.vocab:
+                    continue
+                if word not in vocabulary_dict:
+                    vocabulary_dict[word] = len(inverse_vocabulary)
+                    ques2num.append(len(inverse_vocabulary))
+                    inverse_vocabulary.append(word)
+                else:
+                    ques2num.append(vocabulary_dict[word])
+        df.at[index, question] = ques2num
+
+# %%
+train_df.head()
