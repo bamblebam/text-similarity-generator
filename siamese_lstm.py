@@ -105,3 +105,12 @@ for df in dfs:
 
 # %%
 train_df.head()
+# %%
+embedding_dims = 300
+embeddings = 1*np.random.randn(len(vocabulary_dict)+1, embedding_dims)
+embeddings[0] = 0
+# %%
+for word, index in vocabulary_dict.items():
+    if word in word2vec.vocab:
+        embeddings[index] = word2vec.word_vec(word)
+# %%
