@@ -132,3 +132,6 @@ for df, side in itertools.product([X_train, X_val], ['left', 'right']):
     df[side] = pad_sequences(df[side], maxlen=max_seq_len)
 
 # %%
+assert X_train['left'].shape == X_train['right'].shape
+assert len(X_train['left']) == len(Y_train)
+# %%
