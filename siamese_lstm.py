@@ -101,7 +101,7 @@ for df in dfs:
                     inverse_vocabulary.append(word)
                 else:
                     ques2num.append(vocabulary_dict[word])
-        df.at[index, question] = ques2num
+            df.at[index, question] = ques2num
 
 # %%
 train_df.head()
@@ -113,4 +113,22 @@ embeddings[0] = 0
 for word, index in vocabulary_dict.items():
     if word in word2vec.vocab:
         embeddings[index] = word2vec.word_vec(word)
+# %%
+train_df.to_csv("./datasets/new_train.csv")
+test_df.to_csv("./datasets/new_test.csv")
+# %%
+max_seq_len = 100
+X = train_df[question_cols]
+Y = train_df["is_duplicate"]
+X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=0.1)
+# %%
+X_train = {'left': X_train.question1, 'right': X_train.question2}
+X_val = {'left': X_val.question1, 'right': X_val.question2}
+X_test = {'left': test_df.question1, 'right': test_df.question2}
+Y_train = Y_train.values
+Y_val = Y_val.values
+# %%
+for df, side in itertools.product([X_train, X_val], ['left', 'right']):
+    df[side] = pad_sequences(df[side], maxlen=max_seq_len)
+
 # %%
