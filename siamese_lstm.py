@@ -209,3 +209,5 @@ else:
 # %%
 print(device_lib.list_local_devices())
 # %%
+tf.config.experimental.list_physical_devices('GPU')
+# %%
