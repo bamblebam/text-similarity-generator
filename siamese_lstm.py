@@ -123,6 +123,15 @@ for word, index in vocabulary_dict.items():
 # train_df.to_csv("./datasets/new_train.csv")
 # test_df.to_csv("./datasets/new_test.csv")
 # %%
+# file = open("./pickles/embeddings.pickle", "rb")
+# embeddings = pickle.load(file)
+# file.close()
+# %%
+# train_df = pd.read_csv("./datasets/new_train.csv")
+# test_df = pd.read_csv("./datasets/new_test.csv")
+# %%
+# embedding_dims = 300
+# %%
 max_seq_len = 100
 X = train_df[question_cols]
 Y = train_df["is_duplicate"]
@@ -133,6 +142,7 @@ X_val = {'left': X_val.question1, 'right': X_val.question2}
 X_test = {'left': test_df.question1, 'right': test_df.question2}
 Y_train = Y_train.values
 Y_val = Y_val.values
+
 # %%
 for df, side in itertools.product([X_train, X_val], ['left', 'right']):
     df[side] = pad_sequences(df[side], maxlen=max_seq_len)
